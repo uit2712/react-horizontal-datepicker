@@ -17,7 +17,7 @@ export default function DatePicker({ endDate, selectDate, getSelectedDay, color,
     const firstDate = startDate || new Date();
     const lastDate = addDays(firstDate, endDate || 90);
     const primaryColor = color || 'rgb(54, 105, 238)';
-    const selectedStyle = { fontWeight: "bold", width: "45px", height: "45px", borderRadius: "50%", border: `2px solid ${primaryColor}`, color: primaryColor };
+    const selectedStyle = { fontWeight: "bold", width: "50px", height: "50px", borderRadius: "50%", border: `2px solid ${primaryColor}`, color: primaryColor };
     const buttonColor = { background: primaryColor };
     const labelColor = { color: primaryColor };
 
