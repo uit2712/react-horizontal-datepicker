@@ -7,6 +7,7 @@
 .buttonWrapper {
     display: flex;
     align-items: flex-end;
+    z-index: 2;
     background: inherit;
 }
 
@@ -25,8 +26,9 @@
     align-items: center;
     justify-content: center;
     padding: 0;
-    margin-bottom: 13px;
+    margin-bottom: 5px;
 }
+
 .dateListScrollable {
     display: flex;
     overflow-x: scroll;
@@ -43,9 +45,6 @@
 .monthContainer {
     display: flex;
     flex-direction: column;
-    cursor: pointer;
-    padding: 2px;
-    margin: 2px;
 }
 
 .monthYearLabel {
@@ -54,10 +53,10 @@
     font-size: 15px;
     font-weight: bold;
     position: sticky;
-    top: 10px;
+    top: 0;
     left: 0;
     width: max-content;
-    margin: 0 10px;
+    margin: 0 14px 10px 0;
 }
 
 .dateDayItem{
@@ -74,7 +73,6 @@
 .daysContainer {
     display: flex;
     z-index: 1;
-    margin-top: 10px;
 }
 
 .dayLabel {

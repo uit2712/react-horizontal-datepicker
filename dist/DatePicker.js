@@ -2,19 +2,21 @@
 import React, { useEffect, useState } from "react";
 import styles from "./DatePicker.module.css";
 import { addDays, addMonths, differenceInMonths, format, isSameDay, lastDayOfMonth, startOfMonth } from "date-fns";
-
-const DateView = ({
-  startDate,
-  lastDate,
+export default function DatePicker({
+  endDate,
   selectDate,
   getSelectedDay,
-  primaryColor,
-  labelFormat
-}) => {
-  const [selectedDate, setSelectedDate] = useState(null);
+  color,
+  labelFormat,
+  startDate
+}) {
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const firstSection = {
     marginLeft: '40px'
   };
+  const firstDate = startDate || new Date();
+  const lastDate = addDays(firstDate, endDate || 90);
+  const primaryColor = color || 'rgb(54, 105, 238)';
   const selectedStyle = {
     fontWeight: "bold",
     width: "45px",
@@ -23,45 +25,48 @@ const DateView = ({
     border: `2px solid ${primaryColor}`,
     color: primaryColor
   };
+  const buttonColor = {
+    background: primaryColor
+  };
   const labelColor = {
     color: primaryColor
   };
-
   const getStyles = day => {
-    return isSameDay(day, selectedDate) ? selectedStyle : null;
+    if (isSameDay(day, selectedDate)) {
+      return selectedStyle;
+    }
+    return null;
   };
-
   const getId = day => {
-    return isSameDay(day, selectedDate) ? 'selected' : "";
+    if (isSameDay(day, selectedDate)) {
+      return 'selected';
+    } else {
+      return "";
+    }
   };
-
-  const renderDays = () => {
+  function renderDays() {
     const dayFormat = "E";
     const dateFormat = "d";
     const months = [];
     let days = [];
-
-    for (let i = 0; i <= differenceInMonths(lastDate, startDate); i++) {
+    for (let i = 0; i <= differenceInMonths(lastDate, firstDate); i++) {
       let start, end;
-      const month = startOfMonth(addMonths(startDate, i));
-      start = i === 0 ? Number(format(startDate, dateFormat)) - 1 : 0;
-      end = i === differenceInMonths(lastDate, startDate) ? Number(format(lastDate, "d")) : Number(format(lastDayOfMonth(month), "d"));
-
+      const month = startOfMonth(addMonths(firstDate, i));
+      start = i === 0 ? Number(format(firstDate, dateFormat)) - 1 : 0;
+      end = i === differenceInMonths(lastDate, firstDate) ? Number(format(lastDate, "d")) : Number(format(lastDayOfMonth(month), "d"));
       for (let j = start; j < end; j++) {
-        let currentDay = addDays(month, j);
         days.push( /*#__PURE__*/React.createElement("div", {
-          id: `${getId(currentDay)}`,
+          id: `${getId(addDays(firstDate, j))}`,
           className: styles.dateDayItem,
-          style: getStyles(currentDay),
-          key: currentDay,
-          onClick: () => onDateClick(currentDay)
+          style: getStyles(addDays(month, j)),
+          key: addDays(month, j),
+          onClick: () => onDateClick(addDays(month, j))
         }, /*#__PURE__*/React.createElement("div", {
           className: styles.dayLabel
-        }, format(currentDay, dayFormat)), /*#__PURE__*/React.createElement("div", {
+        }, format(addDays(month, j), dayFormat)), /*#__PURE__*/React.createElement("div", {
           className: styles.dateLabel
-        }, format(currentDay, dateFormat))));
+        }, format(addDays(month, j), dateFormat))));
       }
-
       months.push( /*#__PURE__*/React.createElement("div", {
         className: styles.monthContainer,
         key: month
@@ -74,27 +79,23 @@ const DateView = ({
       }, days)));
       days = [];
     }
-
     return /*#__PURE__*/React.createElement("div", {
       id: "container",
       className: styles.dateListScrollable
     }, months);
-  };
-
+  }
   const onDateClick = day => {
     setSelectedDate(day);
-
     if (getSelectedDay) {
       getSelectedDay(day);
     }
   };
-
   useEffect(() => {
     if (getSelectedDay) {
       if (selectDate) {
         getSelectedDay(selectDate);
       } else {
-        getSelectedDay(startDate);
+        getSelectedDay(firstDate);
       }
     }
   }, []);
@@ -104,7 +105,6 @@ const DateView = ({
         setSelectedDate(selectDate);
         setTimeout(() => {
           let view = document.getElementById('selected');
-
           if (view) {
             view.scrollIntoView({
               behavior: "smooth",
@@ -116,7 +116,29 @@ const DateView = ({
       }
     }
   }, [selectDate]);
-  return /*#__PURE__*/React.createElement(React.Fragment, null, renderDays());
-};
-
-export { DateView };
+  const nextWeek = () => {
+    const e = document.getElementById('container');
+    const width = e ? e.getBoundingClientRect().width : null;
+    e.scrollLeft += width - 60;
+  };
+  const prevWeek = () => {
+    const e = document.getElementById('container');
+    const width = e ? e.getBoundingClientRect().width : null;
+    e.scrollLeft -= width - 60;
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: styles.container
+  }, /*#__PURE__*/React.createElement("div", {
+    className: styles.buttonWrapper
+  }, /*#__PURE__*/React.createElement("button", {
+    className: styles.button,
+    style: buttonColor,
+    onClick: prevWeek
+  }, "\u2190")), renderDays(), /*#__PURE__*/React.createElement("div", {
+    className: styles.buttonWrapper
+  }, /*#__PURE__*/React.createElement("button", {
+    className: styles.button,
+    style: buttonColor,
+    onClick: nextWeek
+  }, "\u2192")));
+}
