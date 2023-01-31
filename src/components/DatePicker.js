@@ -11,7 +11,7 @@ import {
     startOfMonth
 } from "date-fns";
 
-export default function DatePicker({ endDate, selectDate, getSelectedDay, color, labelFormat, startDate }) {
+export default function DatePicker({ endDate, selectDate, getSelectedDay, color, labelFormat, startDate, autoScroll }) {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const firstSection = { marginLeft: '40px' };
     const firstDate = startDate || new Date();
@@ -99,12 +99,14 @@ export default function DatePicker({ endDate, selectDate, getSelectedDay, color,
         if (selectDate) {
             if (!isSameDay(selectedDate, selectDate)) {
                 setSelectedDate(selectDate);
-                setTimeout(() => {
-                    let view = document.getElementById('selected');
-                    if (view) {
-                        view.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-                    }
-                }, 20);
+                if (autoScroll) {
+                    setTimeout(() => {
+                        let view = document.getElementById('selected');
+                        if (view) {
+                            view.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+                        }
+                    }, 20);
+                }
             }
         }
     }, [selectDate]);
