@@ -8,8 +8,7 @@ export default function DatePicker({
   getSelectedDay,
   color,
   labelFormat,
-  startDate,
-  autoScroll
+  startDate
 }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const firstSection = {
@@ -104,18 +103,16 @@ export default function DatePicker({
     if (selectDate) {
       if (!isSameDay(selectedDate, selectDate)) {
         setSelectedDate(selectDate);
-        if (autoScroll) {
-          setTimeout(() => {
-            let view = document.getElementById('selected');
-            if (view) {
-              view.scrollIntoView({
-                behavior: "smooth",
-                inline: "center",
-                block: "nearest"
-              });
-            }
-          }, 20);
-        }
+        setTimeout(() => {
+          let view = document.getElementById('selected');
+          if (view) {
+            view.scrollIntoView({
+              behavior: "smooth",
+              inline: "center",
+              block: "nearest"
+            });
+          }
+        }, 20);
       }
     }
   }, [selectDate]);
@@ -145,3 +142,7 @@ export default function DatePicker({
     onClick: nextWeek
   }, "\u2192")));
 }
+
+/*more pictures
+* example code sandbox
+* update readme*/
